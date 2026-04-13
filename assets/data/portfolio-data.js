@@ -200,6 +200,13 @@ window.PORTFOLIO_DATA = {
       primaryUrl: "https://blog.frankfurt-school.de/5-practical-use-cases-of-ai-in-financial-services/"
     },
     {
+      title: "The Rise of Decentralized Finance (DeFi): What It Means for Personal Finance",
+      date: "December 2024",
+      venue: "Finzen Blog",
+      oneLiner: "Surveys DeFi’s growth and what decentralized tools mean for everyday personal finance.",
+      primaryUrl: "https://finzen.org/blog/rise-of-decentralized-finance-defi/"
+    },
+    {
       title: "Blockchain Beyond Speculation: The Real Impact of Decentralized Systems",
       date: "July 2024",
       venue: "Frankfurt School Blog",
