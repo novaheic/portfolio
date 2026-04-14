@@ -1,10 +1,10 @@
 window.PORTFOLIO_DATA = {
   profile: {
     name: "Nova Heidt",
-    tagline: "Hi, I'm Nova, and I'm into tech, money, and where they intersect.",
-    focusAreas: ["Research", "Development", "Media"],
+    tagline: "Hey, I'm Nova, and I'm into Technology, Money, and building things where they intersect.",
+    focusAreas: ["Project Management", "Research & Analysis", "Software Design & Prototyping"],
     email: "novaheidt@gmail.com",
-    profileImage: "assets/img/profile/nova-heidt.svg",
+    profileImage: "assets/img/profile/nova-heidt.jpg",
     socials: [
       { platform: "linkedin", url: "https://www.linkedin.com/in/nova-heidt/" },
       { platform: "github", url: "https://github.com/novaheic" }
