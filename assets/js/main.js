@@ -24,6 +24,18 @@ function socialLabel(platform) {
   return platform.charAt(0).toUpperCase() + platform.slice(1);
 }
 
+function platformLabel(platform) {
+  const labels = {
+    linkedin: "LinkedIn",
+    instagram: "Instagram",
+    github: "GitHub",
+    email: "Email",
+    ethglobal: "ETHGlobal",
+    devfolio: "Devfolio"
+  };
+  return labels[platform] || socialLabel(platform);
+}
+
 function hasUrl(value) {
   return typeof value === "string" && value.trim().length > 0;
 }
@@ -70,12 +82,115 @@ function normalizedStatus(status) {
 
 function deckIcon() {
   return `
-    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
       <rect x="4" y="4.5" width="16" height="10" rx="1.6"></rect>
       <path d="M12 14.5V19"></path>
       <path d="M8.5 19H15.5"></path>
     </svg>
   `;
+}
+
+function externalLinkIcon() {
+  return `
+    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <path d="M14 5h5v5"></path>
+      <path d="M10 14 19 5"></path>
+      <rect x="5" y="9" width="10" height="10" rx="1.8"></rect>
+    </svg>
+  `;
+}
+
+function mediaPlaceholderIcon() {
+  return `
+    <svg class="line-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <rect x="3.5" y="5" width="17" height="14" rx="2"></rect>
+      <circle cx="9" cy="10" r="1.4"></circle>
+      <path d="m6 16 4.1-4.2a1 1 0 0 1 1.4 0L14 14l2-2a1 1 0 0 1 1.4 0L19 13.6V17H6Z"></path>
+    </svg>
+  `;
+}
+
+function parseYouTubeEmbedUrl(url) {
+  if (!hasUrl(url)) return "";
+  try {
+    const parsed = new URL(url);
+    const host = parsed.hostname.replace(/^www\./, "");
+    let videoId = "";
+
+    if (host === "youtu.be") {
+      videoId = parsed.pathname.slice(1);
+    } else if (host === "youtube.com" || host === "m.youtube.com") {
+      if (parsed.pathname === "/watch") {
+        videoId = parsed.searchParams.get("v") || "";
+      } else if (parsed.pathname.startsWith("/embed/")) {
+        videoId = parsed.pathname.split("/embed/")[1] || "";
+      } else if (parsed.pathname.startsWith("/shorts/")) {
+        videoId = parsed.pathname.split("/shorts/")[1] || "";
+      }
+    }
+
+    const normalizedVideoId = videoId.split(/[?&/]/)[0];
+    if (!normalizedVideoId) return "";
+    return `https://www.youtube-nocookie.com/embed/${normalizedVideoId}?rel=0`;
+  } catch (error) {
+    return "";
+  }
+}
+
+function renderDetailActionLink(url, label, iconMarkup, extraClasses = "") {
+  if (!hasUrl(url)) return "";
+  const classSuffix = extraClasses ? ` ${extraClasses}` : "";
+  return `<a class="pill-link detail-action-link${classSuffix}" href="${url}" target="_blank" rel="noopener noreferrer"><span class="detail-action-icon" aria-hidden="true">${iconMarkup}</span><span class="detail-action-label">${label}</span></a>`;
+}
+
+function renderProjectMedia(mediaItems, position = "afterDetails") {
+  if (!Array.isArray(mediaItems) || mediaItems.length === 0) return "";
+
+  const matchingItems = mediaItems.filter((item) => (item.position || "afterDetails") === position);
+  if (matchingItems.length === 0) return "";
+
+  const plainMarkup = [];
+  const cardMarkup = [];
+
+  matchingItems.forEach((item, index) => {
+    const title = item.title || `Project visual ${index + 1}`;
+    const caption = item.caption || "";
+    const isPlainImage = item.style === "plain" && hasUrl(item.src);
+    const isYouTube = item.type === "youtube" && hasUrl(item.url);
+
+    if (isPlainImage) {
+      const alt = item.alt || title;
+      const sizeClass = item.size ? ` is-${item.size}` : "";
+      plainMarkup.push(
+        `<img class="project-inline-media${sizeClass}" src="${item.src}" alt="${alt}" loading="lazy" />`
+      );
+      return;
+    }
+
+    if (isYouTube) {
+      const embedUrl = parseYouTubeEmbedUrl(item.url);
+      if (embedUrl) {
+        cardMarkup.push(
+          `<figure class="project-media-card project-media-video is-full-width"><div class="project-video-wrap"><iframe class="project-media-iframe" src="${embedUrl}" title="${title}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe></div>${caption ? `<figcaption class="project-media-caption">${caption}</figcaption>` : ""}</figure>`
+        );
+        return;
+      }
+    }
+
+    if (hasUrl(item.src)) {
+      const alt = item.alt || title;
+      cardMarkup.push(
+        `<figure class="project-media-card"><img class="project-media-image" src="${item.src}" alt="${alt}" loading="lazy" />${caption ? `<figcaption class="project-media-caption">${caption}</figcaption>` : ""}</figure>`
+      );
+      return;
+    }
+
+    cardMarkup.push(
+      `<figure class="project-media-card is-placeholder"><div class="project-media-placeholder" role="img" aria-label="${title}">${mediaPlaceholderIcon()}</div>${caption ? `<figcaption class="project-media-caption">${caption}</figcaption>` : ""}</figure>`
+    );
+  });
+
+  return `${plainMarkup.join("")}${cardMarkup.length ? `<section class="project-detail-media" aria-label="Project visuals">${cardMarkup.join("")}</section>` : ""}`;
 }
 
 function extractDateScore(value) {
@@ -312,20 +427,28 @@ function renderProjectDetail(project) {
 
   const showPrimary = hasUrl(project.primaryUrl) && !project.hidePrimary;
   const showBackup = hasUrl(project.backupUrl) && !project.hideBackup;
-  const pitchDeckMarkup = hasUrl(project.pitchDeckUrl)
-    ? `<a class="pill-link deck-link icon-only-link" href="${project.pitchDeckUrl}" target="_blank" rel="noopener noreferrer" aria-label="Open pitch deck" title="Open pitch deck">${deckIcon()}</a>`
-    : "";
+  const actionLinks = [];
 
-  const socialsMarkup = Array.isArray(project.socials) && project.socials.length
-    ? `<div class="social-links">${project.socials
-        .map(
-          (social) =>
-            `<a class="social-link" aria-label="${socialLabel(social.platform)}" href="${social.url}" target="_blank" rel="noopener noreferrer">${socialIcon(
-              social.platform
-            )}</a>`
-        )
-        .join("")}</div>`
-    : "";
+  if (showPrimary) {
+    actionLinks.push(renderDetailActionLink(project.primaryUrl, "Project site", externalLinkIcon()));
+  }
+  if (showBackup) {
+    actionLinks.push(renderDetailActionLink(project.backupUrl, "Backup link", externalLinkIcon(), "subtle"));
+  }
+  if (hasUrl(project.pitchDeckUrl)) {
+    actionLinks.push(renderDetailActionLink(project.pitchDeckUrl, "Pitch deck", deckIcon(), "subtle"));
+  }
+
+  if (Array.isArray(project.socials) && project.socials.length) {
+    project.socials.forEach((social) => {
+      actionLinks.push(
+        renderDetailActionLink(social.url, platformLabel(social.platform), socialIcon(social.platform), "subtle")
+      );
+    });
+  }
+
+  const mediaAfterOneLinerMarkup = renderProjectMedia(project.detailMedia, "afterOneLiner");
+  const mediaAfterDetailsMarkup = renderProjectMedia(project.detailMedia, "afterDetails");
 
   container.innerHTML = `
     <img class="project-banner detail-banner" src="${project.bannerImage}" alt="${project.title} banner" />
@@ -339,14 +462,13 @@ function renderProjectDetail(project) {
         </div>
       </div>
     </div>
-    <p class="project-one-liner">${project.oneLiner}</p>
-    <p class="project-details">${project.details}</p>
     <div class="project-actions">
-      ${showPrimary ? `<a class="pill-link" href="${project.primaryUrl}" target="_blank" rel="noopener noreferrer">Visit</a>` : ""}
-      ${showBackup ? `<a class="pill-link subtle" href="${project.backupUrl}" target="_blank" rel="noopener noreferrer">Backup</a>` : ""}
-      ${pitchDeckMarkup}
-      ${socialsMarkup}
+      ${actionLinks.join("")}
     </div>
+    <p class="project-one-liner">${project.oneLiner}</p>
+    ${mediaAfterOneLinerMarkup}
+    <p class="project-details">${project.details}</p>
+    ${mediaAfterDetailsMarkup}
   `;
 
   document.title = `${project.title} | Nova Heidt`;
