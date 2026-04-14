@@ -2,7 +2,7 @@ const DATA_PATH = "assets/data/projects.json";
 const PROJECT_STATUSES = new Set(["live", "concept", "prototype"]);
 
 async function loadPortfolioData() {
-  if (window.location.protocol === "file:" && window.PORTFOLIO_DATA) {
+  if (window.PORTFOLIO_DATA) {
     return window.PORTFOLIO_DATA;
   }
 
