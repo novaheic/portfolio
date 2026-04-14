@@ -216,7 +216,11 @@ function createProjectCard(project, template) {
 
   if (project.awardLabel) {
     awardBadge.hidden = false;
-    awardBadge.textContent = `🏆 ${project.awardLabel}`;
+    const awardEmoji = project.awardEmoji || "🏆";
+    awardBadge.textContent = `${awardEmoji} ${project.awardLabel}`;
+    if (project.awardVariant) {
+      awardBadge.dataset.variant = project.awardVariant;
+    }
   } else {
     awardBadge.remove();
   }

@@ -217,21 +217,28 @@ h1 {
   position: absolute;
   right: 0.65rem;
   top: 0.65rem;
-  width: 80px;
-  height: 80px;
+  min-height: 1.65rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 222, 164, 0.78);
   background: rgba(73, 56, 24, 0.86);
   color: #ffebc0;
-  font-size: 0.65rem;
-  line-height: 1.2;
-  padding: 0.6rem 0.4rem;
+  font-size: 0.62rem;
+  line-height: 1;
+  padding: 0.26rem 0.58rem;
   display: inline-flex;
   text-align: center;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  letter-spacing: 0.01em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.award-badge[data-variant="users"] {
+  border-color: rgba(134, 234, 177, 0.85);
+  background: rgba(23, 78, 53, 0.9);
+  color: #c8ffe0;
 }
 
 .project-headline {

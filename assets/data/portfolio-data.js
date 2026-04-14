@@ -21,7 +21,7 @@ window.PORTFOLIO_DATA = {
       iconImage: "assets/img/projects/CoverPasteLogo.png",
       primaryUrl: "https://coverpaste.com/",
       backupUrl: "https://coverpaste.vercel.app/",
-      socials: [],
+      socials: [{ platform: "linkedin", url: "https://www.linkedin.com/company/coverpaste/" }],
       details:
         "Coverpaste helps applicants turn raw job descriptions and background material into tailored cover letters quickly, with optional proofreading and formatting for final submission.",
       pitchDeckUrl: ""
@@ -56,7 +56,7 @@ window.PORTFOLIO_DATA = {
       details:
         "Verifi is a concept-stage project recognized at Avalanche Summit Hackathon. The direction centers on building stronger trust and verification primitives around real-world digital interactions.",
       pitchDeckUrl: "https://docs.google.com/presentation/d/1hdKWHBSDGJZvDphs_ZfcQ2Z9Oy19pvyhiRYJQ1yRSpc/edit?usp=sharing",
-      awardLabel: "Honorable Mention"
+      awardLabel: "Hackathon Winner"
     },
     {
       slug: "wattwitness",
@@ -74,7 +74,8 @@ window.PORTFOLIO_DATA = {
       ],
       details:
         "WattWitness is a prototype protocol for trustworthy electricity-meter data flows. It combines verifiable reporting paths with developer-friendly interfaces for real-world energy and sustainability use cases.",
-      pitchDeckUrl: "https://docs.google.com/presentation/d/1LWEtLDqjSMb9f8uNjty5PHsp47X7oH_tyb2PZdxwPZY/edit?usp=sharing"
+      pitchDeckUrl: "https://docs.google.com/presentation/d/1LWEtLDqjSMb9f8uNjty5PHsp47X7oH_tyb2PZdxwPZY/edit?usp=sharing",
+      awardLabel: "Pitch Winner"
     },
     {
       slug: "handoff",
@@ -108,7 +109,10 @@ window.PORTFOLIO_DATA = {
       ],
       details:
         "Finzen combines envelope budgeting, spending tracking, and multi-asset portfolio visibility in one privacy-first product. The experience is designed for daily financial awareness through simple, intentional workflows.",
-      pitchDeckUrl: "https://docs.google.com/presentation/d/1sPHEK7LnIJkDgmvDU8yunMv5_8k3DfwQnrHwoGKRZ14/edit?usp=sharing"
+      pitchDeckUrl: "https://docs.google.com/presentation/d/1sPHEK7LnIJkDgmvDU8yunMv5_8k3DfwQnrHwoGKRZ14/edit?usp=sharing",
+      awardLabel: "300+ Users",
+      awardEmoji: "👥",
+      awardVariant: "users"
     },
     {
       slug: "beside",
